@@ -24,11 +24,12 @@ pipeline {
                 '''
             }
         }
-        stage('Testing') {
+        stage('Test') {
             steps {
                 sh '''
+                    echo "Test stage"
                     test -f build/$FILE_NAME
-                    npm run test
+                    npm test
                 '''
             }
         }

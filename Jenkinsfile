@@ -25,12 +25,21 @@ pipeline {
             }
         }
         stage('Testing') {
+            success {
+
+            }
             steps {
                 sh '''
                     test -f build/$FILE_NAME
                     npm run test
                 '''
             }
+        }
+    }
+
+    post {
+        success {
+            archiveArtifacts artifacts: 'build/**'
         }
     }
 }

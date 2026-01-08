@@ -1,12 +1,9 @@
 pipeline {
     agent any
 
-    environment {
-        FILE_NAME = 'index.html'
-    }
-
     stages {
         /*
+
         stage('Build') {
             agent {
                 docker {
@@ -21,10 +18,11 @@ pipeline {
                     npm --version
                     npm ci
                     npm run build
-                    ls -ls
+                    ls -la
                 '''
             }
-        } */
+        }
+        */
 
         stage('Test') {
             agent {
@@ -33,10 +31,10 @@ pipeline {
                     reuseNode true
                 }
             }
+
             steps {
                 sh '''
-                    echo "Test stage"
-                    test -f build/$FILE_NAME
+                    #test -f build/index.html
                     npm test
                 '''
             }
@@ -49,19 +47,21 @@ pipeline {
                     reuseNode true
                 }
             }
+
             steps {
                 sh '''
                     npm install serve
                     node_modules/.bin/serve -s build &
-                    npm playwright test
+                    sleep 10
+                    npx playwright test
                 '''
             }
         }
     }
 
-    /* post {
+    post {
         always {
             junit 'jest-results/junit.xml'
         }
-    } */
+    }
 }

@@ -1,9 +1,11 @@
 pipeline {
     agent any
 
-    stages {
-        /*
+    environment {
+        FILE_NAME = 'index.html'
+    }
 
+    stages {
         stage('Build') {
             agent {
                 docker {
@@ -21,8 +23,14 @@ pipeline {
                     ls -la
                 '''
             }
+
+            post {
+                success {
+                    archiveArtifacts artifacts: 'build/**'
+                }
+            }
         }
-        */
+
 
         stage('Test') {
             parallel {
@@ -36,7 +44,7 @@ pipeline {
 
                     steps {
                         sh '''
-                            #test -f build/index.html
+                            #test -f build/$FILE_NAME
                             npm test
                         '''
                     }

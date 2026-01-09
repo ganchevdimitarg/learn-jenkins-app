@@ -8,7 +8,7 @@ pipeline {
     }
 
     stages {
-        /* stage('Build') {
+        stage('Build') {
             agent {
                 docker {
                     image 'node:18-alpine'
@@ -31,7 +31,7 @@ pipeline {
                     archiveArtifacts artifacts: 'build *//**'
                 }
             }
-        } */
+        }
 
 
         stage('Test') {
@@ -99,6 +99,14 @@ pipeline {
                     node_modules/.bin/netlify status
                     node_modules/.bin/netlify deploy --dir=build
                 '''
+            }
+        }
+
+        stage('Approval') {
+            steps {
+                timeout(time: 1, unit: 'MINUTES') {
+                    input message: 'Ready to deploy?', ok: 'Yes'
+                }
             }
         }
 

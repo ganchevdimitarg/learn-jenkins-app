@@ -26,11 +26,11 @@ pipeline {
                 '''
             }
 
-            post {
-                success {
-                    archiveArtifacts artifacts: 'build/**'
-                }
-            }
+            //post {
+            //    success {
+            //        archiveArtifacts artifacts: 'build/**'
+            //    }
+            //}
         }
 
 

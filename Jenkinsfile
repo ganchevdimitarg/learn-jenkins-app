@@ -91,8 +91,8 @@ pipeline {
             }
             steps {
                 sh '''
-                    npm install netlity-cli -g
-                    netlity --version
+                    npm install netlity-cli
+                    node_modules/.bin/netlity --version
                 '''
             }
 

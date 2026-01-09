@@ -6,7 +6,7 @@ pipeline {
     }
 
     stages {
-        stage('Build') {
+        /* stage('Build') {
             agent {
                 docker {
                     image 'node:18-alpine'
@@ -26,10 +26,10 @@ pipeline {
 
             post {
                 success {
-                    archiveArtifacts artifacts: 'build/**'
+                    archiveArtifacts artifacts: 'build *//**'
                 }
             }
-        }
+        } */
 
 
         stage('Test') {
@@ -78,6 +78,27 @@ pipeline {
                             publishHTML([allowMissing: false, alwaysLinkToLastBuild: false, icon: '', keepAll: false, reportDir: 'playwright-report', reportFiles: 'index.html', reportName: 'HTML Report', reportTitles: '', useWrapperFileDirectly: true])
                         }
                     }
+                }
+            }
+        }
+
+        stage('Deploy') {
+            agent {
+                docker {
+                    image 'node:18-alpine'
+                    reuseNode true
+                }
+            }
+            steps {
+                sh '''
+                    npm install netlity-cli -g
+                    netlity --version
+                '''
+            }
+
+            post {
+                success {
+                    archiveArtifacts artifacts: 'build/**'
                 }
             }
         }

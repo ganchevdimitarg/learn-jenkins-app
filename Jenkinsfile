@@ -89,11 +89,14 @@ pipeline {
                     node_modules/.bin/netlify --version
                     echo "Deploying to staging. Site ID: $NETLIFY_SITE_ID"
                     node_modules/.bin/netlify status --json > deploy-output.json
-                    node_modules/.bin/netlify deploy --dir=build
+                    node_modules/.bin/netlify deploy
                 '''
-                /* script {
-                    env.STAGING_URL = sh(script: "node_modules/.bin/node-jq -r '.deploy_url' deploy-output.json", returnStdout: true)
-                } */
+                script {
+                    env.STAGING_URL = sh(script: "node_modules/.bin/node-jq -r 'siteData.site-url' deploy-output.json", returnStdout: true)
+                }
+                sh '''
+                    echo '${STAGING_URL}'
+                '''
             }
         }
 
@@ -116,7 +119,7 @@ pipeline {
                     publishHTML([allowMissing: false, alwaysLinkToLastBuild: false, keepAll: false, reportDir: 'playwright-report', reportFiles: 'index.html', reportName: 'Staging E2E', reportTitles: '', useWrapperFileDirectly: true])
                 }
             }
-        } */
+        }
 
         stage('Approval') {
             steps {
@@ -167,6 +170,6 @@ pipeline {
                     publishHTML([allowMissing: false, alwaysLinkToLastBuild: false, keepAll: false, reportDir: 'playwright-report', reportFiles: 'index.html', reportName: 'Prod E2E', reportTitles: '', useWrapperFileDirectly: true])
                 }
             }
-        }
+        } */
     }
 }

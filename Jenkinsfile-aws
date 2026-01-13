@@ -38,7 +38,6 @@ pipeline {
 
             environment {
              AWS_S3_BUCKET = 'test-1321312312'
-             AWS_DEFAULT_REGION = 'us-east-1'
             }
 
             steps {
@@ -49,12 +48,28 @@ pipeline {
                     '''
                 }
             }
+        }
+
+        stage('Deploy on AWS ECS') {
+            agent {
+                docker {
+                    image 'amazon/aws-cli'
+                    reuseNode true
+                    args "-u root --entrypoint=''"
+                }
+            }
+
+            environment {
+             AWS_DEFAULT_REGION = 'us-east-1'
+            }
 
             steps {
                 withCredentials([usernamePassword(credentialsId: 'aws', passwordVariable: 'AWS_SECRET_ACCESS_KEY', usernameVariable: 'AWS_ACCESS_KEY_ID')]) {
                     sh '''
                         aws --version
-                        aws ecs register-task-definition --cli-input-json file://aws/task-definition-prod.json
+                        yum install jq -y
+                        LATEST_TD_REVISION = $(aws ecs register-task-definition --cli-input-json file://aws/task-definition-prod.json | jq '.taskDefinition.revision')
+                        aws ecs update-service --cluster name-of-the-cluster --service name-of-the-service --task-definition name-of-the-task-definition:$LATEST_TD_REVISION
                     '''
                 }
             }

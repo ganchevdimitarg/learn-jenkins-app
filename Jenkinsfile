@@ -107,8 +107,6 @@ pipeline {
             }
         }
 
-
-        /*
         stage('Deploy on AWS S3 static website') {
             agent {
                 docker {
@@ -134,7 +132,6 @@ pipeline {
                 }
             }
         }
-        */
 
         stage('Deploy prod') {
             agent {

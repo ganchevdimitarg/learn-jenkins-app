@@ -2,10 +2,10 @@ pipeline {
     agent any
 
     stages {
-        stage ('Docker build the image') {
+        stage ('Build docker image') {
             steps {
                 sh '''
-                    docker build -t custom-playwright .
+                    docker build -f ci/Dockerfile -t custom-playwright .
                 '''
             }
         }

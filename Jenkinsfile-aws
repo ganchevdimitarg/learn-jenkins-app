@@ -37,7 +37,8 @@ pipeline {
             }
 
             environment {
-             AWS_S3_BUCKET = 'test-1321312312'
+                REACT_APP_VERSION = "1.0.$BUILD_ID"
+                AWS_S3_BUCKET = 'test-1321312312'
             }
 
             steps {
@@ -60,7 +61,11 @@ pipeline {
             }
 
             environment {
-             AWS_DEFAULT_REGION = 'us-east-1'
+                REACT_APP_VERSION = "1.0.$BUILD_ID"
+                AWS_DEFAULT_REGION = 'us-east-1'
+                AWS_ECS_CLUSTER = 'name-of-the-cluster'
+                AWS_ECS_SERVICE_PROD = 'name-of-the-service'
+                AWS_ECS_TD_PROD = 'name-of-the-task-definition'
             }
 
             steps {
@@ -69,7 +74,8 @@ pipeline {
                         aws --version
                         yum install jq -y
                         LATEST_TD_REVISION = $(aws ecs register-task-definition --cli-input-json file://aws/task-definition-prod.json | jq '.taskDefinition.revision')
-                        aws ecs update-service --cluster name-of-the-cluster --service name-of-the-service --task-definition name-of-the-task-definition:$LATEST_TD_REVISION
+                        aws ecs update-service --cluster $AWS_ECS_CLUSTER --service $AWS_ECS_SERVICE_PROD --task-definition $AWS_ECS_TD_PROD:$LATEST_TD_REVISION
+                        aws ecs wait services-stable --cluster $AWS_ECS_CLUSTER --services $AWS_ECS_SERVICE_PROD
                     '''
                 }
             }

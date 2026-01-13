@@ -6,7 +6,7 @@ pipeline {
             steps {
                 sh '''
                     docker build -f ci/Dockerfile-playwright -t custom-playwright .
-                    docker build -f ci/Dockerfile-aws-cli -t custom-aws-cli .
+                    #docker build -f ci/Dockerfile-aws-cli -t custom-aws-cli .
                 '''
             }
         }
